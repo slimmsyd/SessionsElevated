@@ -54,7 +54,6 @@ export default function Footer() {
           <div>
             <div className="label" style={{ marginBottom: 20 }}>Connect</div>
             <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 12 }}>
-              <li><a href="#" style={linkStyle}>Instagram ↗</a></li>
               <li><a href={LINKS.rsvp} target="_blank" rel="noopener noreferrer" onClick={() => trackRsvp("footer_link", LINKS.rsvp)} style={linkStyle}>RSVP via EventNoire ↗</a></li>
             </ul>
           </div>
@@ -73,6 +72,17 @@ export default function Footer() {
         >
           <div className="mono">© Elevated Sessions, MMXXVI</div>
           <div className="mono">Join the movement</div>
+          <div className="mono">
+            Built by{" "}
+            <a
+              href="https://www.0ncode.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "var(--accent)", textDecoration: "none" }}
+            >
+              ONCODE ↗
+            </a>
+          </div>
         </div>
 
         <div

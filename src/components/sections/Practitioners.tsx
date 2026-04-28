@@ -66,19 +66,7 @@ export default function Practitioners() {
                 {p.name}
               </h3>
               <div className="label" style={{ marginBottom: 16 }}>{p.role}</div>
-              <p className="body" style={{ margin: 0, marginBottom: 16 }}>{p.bio}</p>
-              <a
-                href="#"
-                style={{
-                  fontFamily: "var(--font-body)",
-                  fontStyle: "italic",
-                  color: "var(--accent)",
-                  textDecoration: "none",
-                  fontSize: 16,
-                }}
-              >
-                Connect →
-              </a>
+              <p className="body" style={{ margin: 0 }}>{p.bio}</p>
             </div>
           ))}
         </div>

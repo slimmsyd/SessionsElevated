@@ -3,8 +3,6 @@
 type Featured = { name: string; handle: string; logo: string | null };
 type Past = { name: string; logo: string | null; url: string | null };
 
-const handleToInstagram = (h: string) => `https://instagram.com/${h.replace(/^@/, "")}`;
-
 const featured: Featured[] = [
   { name: "Smiles & Good Times", handle: "@smilesngoodtimes", logo: "/assets/partners/smiles-good-times.png" },
   { name: "Dayo's Healing Garden", handle: "@dayoshealinggarden_", logo: null },
@@ -87,15 +85,9 @@ export default function Partners() {
                 <div style={{ fontFamily: "var(--font-display)", fontSize: 22, lineHeight: 1.1, marginBottom: 6 }}>
                   {p.name}
                 </div>
-                <a
-                  href={handleToInstagram(p.handle)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mono"
-                  style={{ color: "var(--accent)", textDecoration: "none" }}
-                >
+                <div className="mono" style={{ color: "var(--accent)" }}>
                   {p.handle}
-                </a>
+                </div>
               </div>
             </div>
           ))}
