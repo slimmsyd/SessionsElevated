@@ -1,4 +1,6 @@
+"use client";
 import { LINKS } from "@/lib/links";
+import { trackRsvp } from "@/lib/analytics";
 
 const linkStyle: React.CSSProperties = {
   fontFamily: "var(--font-body)",
@@ -32,6 +34,7 @@ export default function Footer() {
               href={LINKS.rsvp}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackRsvp("footer_button", LINKS.rsvp)}
               className="btn"
               style={{ marginTop: 24, background: "var(--ink)", color: "var(--bg)" }}
             >
@@ -52,7 +55,7 @@ export default function Footer() {
             <div className="label" style={{ marginBottom: 20 }}>Connect</div>
             <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 12 }}>
               <li><a href="#" style={linkStyle}>Instagram ↗</a></li>
-              <li><a href={LINKS.rsvp} target="_blank" rel="noopener noreferrer" style={linkStyle}>RSVP via EventNoire ↗</a></li>
+              <li><a href={LINKS.rsvp} target="_blank" rel="noopener noreferrer" onClick={() => trackRsvp("footer_link", LINKS.rsvp)} style={linkStyle}>RSVP via EventNoire ↗</a></li>
             </ul>
           </div>
         </div>

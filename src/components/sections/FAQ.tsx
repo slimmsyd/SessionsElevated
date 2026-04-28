@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { LINKS } from "@/lib/links";
+import { trackRsvp } from "@/lib/analytics";
 
 const faqs = [
   {
@@ -145,6 +146,7 @@ export default function FAQ() {
             href={LINKS.rsvp}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackRsvp("faq_bottom", LINKS.rsvp)}
             className="btn"
             style={{ background: "var(--ink)", color: "var(--bg)" }}
           >

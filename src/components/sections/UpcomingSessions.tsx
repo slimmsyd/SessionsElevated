@@ -13,6 +13,7 @@ type Session = {
   status: "open" | "soon" | "closed";
   poster: string;
   url?: string;
+  trackingLocation?: RsvpLocation;
 };
 
 const sessions: Session[] = [
@@ -26,6 +27,7 @@ const sessions: Session[] = [
     status: "open",
     poster: "/assets/sessions/winter-ground-seed.png",
     url: LINKS.rsvp,
+    trackingLocation: "session_row_spring",
   },
   {
     season: "Winter",
@@ -37,6 +39,7 @@ const sessions: Session[] = [
     status: "closed",
     poster: "/assets/sessions/spring-awaken-blossom.png",
     url: LINKS.pastWinter,
+    trackingLocation: "session_row_winter_closed",
   },
   {
     season: "Summer",
@@ -58,6 +61,7 @@ const sessions: Session[] = [
     status: "closed",
     poster: "/assets/sessions/fall-breathe-blow.png",
     url: LINKS.pastBreatheAndBlow,
+    trackingLocation: "session_row_fall_closed",
   },
 ];
 
@@ -130,6 +134,7 @@ export default function UpcomingSessions() {
                     href={s.url}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => s.trackingLocation && trackRsvp(s.trackingLocation, s.url!)}
                     className="btn"
                     style={{ background: "var(--ink)", color: "var(--bg)" }}
                   >
@@ -146,6 +151,7 @@ export default function UpcomingSessions() {
                     href={s.url}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => s.trackingLocation && trackRsvp(s.trackingLocation, s.url!)}
                     className="btn btn-ghost"
                     style={{ opacity: 0.6 }}
                   >
