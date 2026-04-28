@@ -5,7 +5,7 @@ type Past = { name: string; logo: string | null; url: string | null };
 
 const featured: Featured[] = [
   { name: "Smiles & Good Times", handle: "@smilesngoodtimes", logo: "/assets/partners/smiles-good-times.png" },
-  { name: "Dayo's Healing Garden", handle: "@dayoshealinggarden_", logo: null },
+  { name: "Dayo's Healing Garden", handle: "@dayoshealinggarden_", logo: "/assets/partners/dayos-healing-garden.png" },
   { name: "3Experiences", handle: "@3Experiences", logo: "/assets/partners/3experiences.png" },
   { name: "BtheCr8tor", handle: "@b.thecr8tor", logo: "/assets/partners/bthecr8tor.png" },
 ];

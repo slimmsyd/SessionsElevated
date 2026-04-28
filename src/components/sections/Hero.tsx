@@ -180,9 +180,6 @@ export default function Hero() {
           } as React.CSSProperties
         }
       >
-        <span className="mono" style={{ color: "rgba(244,237,224,0.65)" }}>
-          19 / 32 SEATS REMAINING
-        </span>
         <a
           href={LINKS.rsvp}
           target="_blank"
