@@ -144,7 +144,7 @@ export default function Hero() {
             lineHeight: 1,
           }}
         >
-          The Thaw
+          Spring Awakening
         </div>
         <div
           style={{
@@ -154,9 +154,9 @@ export default function Hero() {
             color: "rgba(244,237,224,0.9)",
           }}
         >
-          Saturday, April 18 · 8:00 AM
+          Sunday, May 24, 2026 · 10:00 AM
           <br />
-          The Greenhouse, Bed-Stuy
+          Doors open at 9:00 AM
         </div>
       </div>
 
