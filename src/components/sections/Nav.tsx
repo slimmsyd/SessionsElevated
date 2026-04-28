@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { LINKS } from "@/lib/links";
+import { trackRsvp } from "@/lib/analytics";
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
@@ -73,6 +74,7 @@ export default function Nav() {
             href={LINKS.rsvp}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackRsvp("nav_desktop", LINKS.rsvp)}
             className="btn"
             style={{
               padding: "10px 20px",
@@ -125,7 +127,10 @@ export default function Nav() {
             target="_blank"
             rel="noopener noreferrer"
             className="btn nav-drawer-rsvp"
-            onClick={closeMenu}
+            onClick={() => {
+              trackRsvp("nav_mobile", LINKS.rsvp);
+              closeMenu();
+            }}
           >
             RSVP <span className="arrow">→</span>
           </a>

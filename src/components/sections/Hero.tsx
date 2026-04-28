@@ -2,6 +2,7 @@
 // Hero - 08a Full-bleed top-anchored, side-flanked. Looping video at 0.5x.
 import { useEffect, useRef } from "react";
 import { LINKS } from "@/lib/links";
+import { trackRsvp } from "@/lib/analytics";
 
 export default function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -186,6 +187,7 @@ export default function Hero() {
           href={LINKS.rsvp}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => trackRsvp("hero_bottom_rail", LINKS.rsvp)}
           className="hero-cta"
         >
           Reserve a seat{" "}

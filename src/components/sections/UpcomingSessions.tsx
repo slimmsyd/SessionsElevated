@@ -1,5 +1,7 @@
+"use client";
 // Sessions - poster-led 2-column rows with session artwork
 import { LINKS } from "@/lib/links";
+import { trackRsvp, type RsvpLocation } from "@/lib/analytics";
 
 type Session = {
   season: string;
