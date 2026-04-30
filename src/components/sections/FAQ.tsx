@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 import { LINKS } from "@/lib/links";
 import { trackRsvp } from "@/lib/analytics";
 
@@ -22,7 +23,7 @@ const faqs = [
   },
   {
     q: "How do I reserve a seat?",
-    a: "Reservations are made through EventNoire. Spring Awakening (May 24, 2026) is currently open. Seats are intentionally limited - once a Session is full, registration closes.",
+    a: "Reservations are made directly here on the site - tap RSVP to choose your tier, share a few details, and pay securely. Spring Awakening (May 24, 2026) is currently open. Seats are intentionally limited - once a Session is full, registration closes.",
   },
 ];
 
@@ -142,16 +143,14 @@ export default function FAQ() {
             } as React.CSSProperties
           }
         >
-          <a
+          <Link
             href={LINKS.rsvp}
-            target="_blank"
-            rel="noopener noreferrer"
             onClick={() => trackRsvp("faq_bottom", LINKS.rsvp)}
             className="btn"
             style={{ background: "var(--ink)", color: "var(--bg)" }}
           >
             RSVP for Spring Awakening <span className="arrow">→</span>
-          </a>
+          </Link>
         </div>
       </div>
     </section>

@@ -1,8 +1,8 @@
-// Owner priority: drive every active RSVP click to the current Spring Awakening tickets page.
+// Owner priority: drive every active RSVP click to the on-site /book checkout flow.
 
 export const LINKS = {
-  // Current event - May 24, 2026 - Spring Awakening
-  rsvp: "https://events.eventnoire.com/e/elevatedblossom20-2/tickets",
+  // Current event - May 24, 2026 - Spring Awakening (self-hosted booking flow)
+  rsvp: "/book",
   eventPage: "https://events.eventnoire.com/e/elevatedblossom20-2",
 
   // Past events

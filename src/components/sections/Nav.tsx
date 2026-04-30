@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { LINKS } from "@/lib/links";
 import { trackRsvp } from "@/lib/analytics";
 
@@ -70,10 +71,8 @@ export default function Nav() {
           <a href="#practitioners" style={{ color: "inherit" }}>Practitioners</a>
           <a href="#partners" style={{ color: "inherit" }}>Partners</a>
           <a href="#faq" style={{ color: "inherit" }}>FAQ</a>
-          <a
+          <Link
             href={LINKS.rsvp}
-            target="_blank"
-            rel="noopener noreferrer"
             onClick={() => trackRsvp("nav_desktop", LINKS.rsvp)}
             className="btn"
             style={{
@@ -86,7 +85,7 @@ export default function Nav() {
             }}
           >
             RSVP <span className="arrow">→</span>
-          </a>
+          </Link>
         </div>
 
         {/* Mobile hamburger */}
@@ -122,10 +121,8 @@ export default function Nav() {
           <a href="#practitioners" onClick={closeMenu}>Practitioners</a>
           <a href="#partners" onClick={closeMenu}>Partners</a>
           <a href="#faq" onClick={closeMenu}>FAQ</a>
-          <a
+          <Link
             href={LINKS.rsvp}
-            target="_blank"
-            rel="noopener noreferrer"
             className="btn nav-drawer-rsvp"
             onClick={() => {
               trackRsvp("nav_mobile", LINKS.rsvp);
@@ -133,7 +130,7 @@ export default function Nav() {
             }}
           >
             RSVP <span className="arrow">→</span>
-          </a>
+          </Link>
         </nav>
       </div>
     </>

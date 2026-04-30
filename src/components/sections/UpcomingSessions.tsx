@@ -1,5 +1,6 @@
 "use client";
 // Sessions - poster-led 2-column rows with session artwork
+import Link from "next/link";
 import { LINKS } from "@/lib/links";
 import { trackRsvp, type RsvpLocation } from "@/lib/analytics";
 
@@ -13,6 +14,7 @@ type Session = {
   status: "open" | "soon" | "closed";
   poster: string;
   url?: string;
+  external?: boolean;
   trackingLocation?: RsvpLocation;
 };
 
@@ -39,6 +41,7 @@ const sessions: Session[] = [
     status: "closed",
     poster: "/assets/sessions/spring-awaken-blossom.png",
     url: LINKS.pastWinter,
+    external: true,
     trackingLocation: "session_row_winter_closed",
   },
   {
@@ -61,6 +64,7 @@ const sessions: Session[] = [
     status: "closed",
     poster: "/assets/sessions/fall-breathe-blow.png",
     url: LINKS.pastBreatheAndBlow,
+    external: true,
     trackingLocation: "session_row_fall_closed",
   },
 ];
@@ -130,16 +134,27 @@ export default function UpcomingSessions() {
 
               <div style={{ marginTop: 28 }}>
                 {s.status === "open" && s.url && (
-                  <a
-                    href={s.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => s.trackingLocation && trackRsvp(s.trackingLocation, s.url!)}
-                    className="btn"
-                    style={{ background: "var(--ink)", color: "var(--bg)" }}
-                  >
-                    {s.cta} <span className="arrow">→</span>
-                  </a>
+                  s.external ? (
+                    <a
+                      href={s.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => s.trackingLocation && trackRsvp(s.trackingLocation, s.url!)}
+                      className="btn"
+                      style={{ background: "var(--ink)", color: "var(--bg)" }}
+                    >
+                      {s.cta} <span className="arrow">→</span>
+                    </a>
+                  ) : (
+                    <Link
+                      href={s.url}
+                      onClick={() => s.trackingLocation && trackRsvp(s.trackingLocation, s.url!)}
+                      className="btn"
+                      style={{ background: "var(--ink)", color: "var(--bg)" }}
+                    >
+                      {s.cta} <span className="arrow">→</span>
+                    </Link>
+                  )
                 )}
                 {s.status === "soon" && (
                   <span className="btn btn-ghost" style={{ pointerEvents: "none", opacity: 0.7 }}>

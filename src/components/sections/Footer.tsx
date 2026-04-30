@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { LINKS } from "@/lib/links";
 import { trackRsvp } from "@/lib/analytics";
 
@@ -30,16 +31,14 @@ export default function Footer() {
             <p className="body" style={{ marginTop: 28, maxWidth: "32ch" }}>
               Join the movement. A wellness series designed for the culture, in rhythm with the seasons.
             </p>
-            <a
+            <Link
               href={LINKS.rsvp}
-              target="_blank"
-              rel="noopener noreferrer"
               onClick={() => trackRsvp("footer_button", LINKS.rsvp)}
               className="btn"
               style={{ marginTop: 24, background: "var(--ink)", color: "var(--bg)" }}
             >
               RSVP for Spring Awakening <span className="arrow">→</span>
-            </a>
+            </Link>
           </div>
           <div>
             <div className="label" style={{ marginBottom: 20 }}>The Site</div>
@@ -54,7 +53,7 @@ export default function Footer() {
           <div>
             <div className="label" style={{ marginBottom: 20 }}>Connect</div>
             <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 12 }}>
-              <li><a href={LINKS.rsvp} target="_blank" rel="noopener noreferrer" onClick={() => trackRsvp("footer_link", LINKS.rsvp)} style={linkStyle}>RSVP via EventNoire ↗</a></li>
+              <li><Link href={LINKS.rsvp} onClick={() => trackRsvp("footer_link", LINKS.rsvp)} style={linkStyle}>Reserve a seat →</Link></li>
             </ul>
           </div>
         </div>

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { LINKS } from "@/lib/links";
 import { trackRsvp } from "@/lib/analytics";
 
@@ -17,15 +18,13 @@ export default function StickyReserve() {
   }, []);
 
   return (
-    <a
+    <Link
       href={LINKS.rsvp}
-      target="_blank"
-      rel="noopener noreferrer"
       onClick={() => trackRsvp("sticky_reserve", LINKS.rsvp)}
       className={`sticky-reserve${visible ? " visible" : ""}`}
       aria-label="Reserve a seat for Spring Awakening"
     >
       Reserve a seat <span className="arrow">→</span>
-    </a>
+    </Link>
   );
 }

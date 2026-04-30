@@ -1,6 +1,7 @@
 "use client";
 // Hero - 08a Full-bleed top-anchored, side-flanked. Looping video at 0.5x.
 import { useEffect, useRef } from "react";
+import Link from "next/link";
 import { LINKS } from "@/lib/links";
 import { trackRsvp } from "@/lib/analytics";
 
@@ -180,18 +181,16 @@ export default function Hero() {
           } as React.CSSProperties
         }
       >
-        <a
+        <Link
           href={LINKS.rsvp}
-          target="_blank"
-          rel="noopener noreferrer"
           onClick={() => trackRsvp("hero_bottom_rail", LINKS.rsvp)}
           className="hero-cta"
         >
           Reserve a seat{" "}
           <span style={{ fontFamily: "serif", fontStyle: "italic" }}>→</span>
-        </a>
+        </Link>
         <span className="mono" style={{ color: "rgba(244,237,224,0.65)" }}>
-          VIA EVENTNOIRE ↗
+          ON-SITE CHECKOUT
         </span>
       </div>
     </section>

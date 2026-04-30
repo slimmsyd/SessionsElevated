@@ -29,3 +29,18 @@ export function trackRsvp(location: RsvpLocation, destinationUrl: string) {
     destination_url: destinationUrl,
   });
 }
+
+// Booking funnel events on /book. Reports > Events > booking_* in GA4.
+export type BookingEvent =
+  | { name: "booking_step_view"; step: number; mode: "admission" | "partnership" }
+  | { name: "booking_tier_change"; tier_id: string; qty: number }
+  | { name: "booking_submit_attempt"; step: number }
+  | { name: "booking_complete"; subtotal: number; total: number; tier_count: number };
+
+export function trackBooking(event: BookingEvent) {
+  if (typeof window === "undefined") return;
+  if (typeof window.gtag !== "function") return;
+
+  const { name, ...params } = event;
+  window.gtag("event", name, params);
+}
