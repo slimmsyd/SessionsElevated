@@ -1,23 +1,24 @@
 "use client";
-import { useState, useTransition, type ChangeEvent } from "react";
+import { useRef, useState, useTransition, type ChangeEvent, type DragEvent } from "react";
 import { useRouter } from "next/navigation";
 import type { Session } from "@/lib/sessions";
 import styles from "./copy.module.css";
 
-const EDITABLE_FIELDS: {
-  key: keyof Omit<Session, "id">;
+type FieldDef = {
+  key: keyof Omit<Session, "id" | "poster">;
   label: string;
   hint?: string;
   multiline?: boolean;
   maxLength: number;
-}[] = [
+};
+
+const EDITABLE_FIELDS: FieldDef[] = [
   { key: "title", label: "Title", maxLength: 200 },
   { key: "subtitle", label: "Subtitle", maxLength: 300 },
   { key: "date", label: "Date", hint: "e.g. Sunday, May 24, 2026", maxLength: 100 },
   { key: "time", label: "Time", hint: "e.g. 10:00 AM – 2:00 PM", maxLength: 100 },
   { key: "doors", label: "Doors", hint: "e.g. Doors open at 9:00 AM", maxLength: 100 },
   { key: "location", label: "Location", multiline: true, maxLength: 300 },
-  { key: "poster", label: "Poster path", hint: "Path under /public", maxLength: 500 },
 ];
 
 type Draft = Omit<Session, "id">;
@@ -28,6 +29,9 @@ function sessionToDraft(s: Session): Draft {
   return rest;
 }
 
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif"];
+const MAX_BYTES = 10 * 1024 * 1024;
+
 export default function CopyEditor({ session }: { session: Session }) {
   const router = useRouter();
   const [original, setOriginal] = useState<Session>(session);
@@ -35,6 +39,9 @@ export default function CopyEditor({ session }: { session: Session }) {
   const [error, setError] = useState("");
   const [savedAt, setSavedAt] = useState<number | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [uploading, setUploading] = useState(false);
+  const [dragActive, setDragActive] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const dirty = JSON.stringify(draft) !== JSON.stringify(sessionToDraft(original));
 
@@ -45,6 +52,52 @@ export default function CopyEditor({ session }: { session: Session }) {
       setError("");
       setSavedAt(null);
     };
+
+  async function uploadFile(file: File) {
+    setError("");
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      setError(`Unsupported file type. Use JPG, PNG, WebP, or AVIF.`);
+      return;
+    }
+    if (file.size > MAX_BYTES) {
+      setError(`File too large (${(file.size / 1024 / 1024).toFixed(1)} MB). Max 10 MB.`);
+      return;
+    }
+    setUploading(true);
+    try {
+      const form = new FormData();
+      form.append("file", file);
+      form.append("sessionId", original.id);
+      const res = await fetch("/api/admin/copy/poster", {
+        method: "POST",
+        body: form,
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(data.error || "Upload failed");
+        return;
+      }
+      setDraft((d) => ({ ...d, poster: data.url }));
+      setSavedAt(null);
+    } catch {
+      setError("Network error during upload");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  function onPickFile(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (file) uploadFile(file);
+    e.target.value = "";
+  }
+
+  function onDrop(e: DragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    setDragActive(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) uploadFile(file);
+  }
 
   async function handleSave() {
     setError("");
@@ -102,6 +155,70 @@ export default function CopyEditor({ session }: { session: Session }) {
             {f.hint && <span className={styles.hint}>{f.hint}</span>}
           </label>
         ))}
+
+        <div className={`${styles.field} ${styles.posterField}`}>
+          <span className="label">Poster image</span>
+
+          <div
+            onDragEnter={(e) => {
+              e.preventDefault();
+              setDragActive(true);
+            }}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setDragActive(true);
+            }}
+            onDragLeave={() => setDragActive(false)}
+            onDrop={onDrop}
+            onClick={() => fileInputRef.current?.click()}
+            className={`${styles.dropzone} ${
+              dragActive ? styles.dropzoneActive : ""
+            }`}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                fileInputRef.current?.click();
+              }
+            }}
+          >
+            {draft.poster ? (
+              <div className={styles.dropzonePreviewWrap}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={draft.poster}
+                  alt="Current poster"
+                  className={styles.dropzonePreview}
+                />
+                <div className={styles.dropzoneOverlay}>
+                  <span>Drop a new image or click to replace</span>
+                </div>
+              </div>
+            ) : (
+              <div className={styles.dropzoneEmpty}>
+                <div className={styles.dropzoneIcon} aria-hidden="true">↑</div>
+                <div className={styles.dropzoneTitle}>
+                  Drop an image here, or click to browse
+                </div>
+                <div className={styles.dropzoneHint}>
+                  JPG, PNG, WebP, or AVIF · up to 10 MB
+                </div>
+              </div>
+            )}
+            {uploading && (
+              <div className={styles.dropzoneUploading}>Uploading…</div>
+            )}
+          </div>
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept={ALLOWED_TYPES.join(",")}
+            onChange={onPickFile}
+            style={{ display: "none" }}
+          />
+        </div>
       </div>
 
       {error && (
@@ -118,7 +235,7 @@ export default function CopyEditor({ session }: { session: Session }) {
         <button
           type="button"
           onClick={handleRevert}
-          disabled={!dirty || isPending}
+          disabled={!dirty || isPending || uploading}
           className="btn btn-ghost"
         >
           Revert
@@ -126,7 +243,7 @@ export default function CopyEditor({ session }: { session: Session }) {
         <button
           type="button"
           onClick={handleSave}
-          disabled={!dirty || isPending}
+          disabled={!dirty || isPending || uploading}
           className="btn"
         >
           {isPending ? "Saving…" : "Save changes"}

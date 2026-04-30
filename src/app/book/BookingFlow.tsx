@@ -85,9 +85,11 @@ function PaymentStep({
 export default function BookingFlow({
   session,
   tiers,
+  remainingByTierId,
 }: {
   session: Session;
   tiers: Tier[];
+  remainingByTierId: Record<string, number | null>;
 }) {
   const admissionTier = tiers.find((t) => t.mode === "admission");
   const partnershipTiers = tiers.filter((t) => t.mode === "partnership");
@@ -133,9 +135,15 @@ export default function BookingFlow({
     details.email.includes("@");
   const canSubmit = Boolean(pay.name) && Boolean(pay.zip) && pay.agree;
 
+  const incCapFor = (id: string): number => {
+    const remaining = remainingByTierId[id];
+    if (remaining == null) return MAX_QTY;
+    return Math.min(MAX_QTY, remaining);
+  };
+
   const inc = (id: string) => {
     setQty((q) => {
-      const next = Math.min((q[id] ?? 0) + 1, MAX_QTY);
+      const next = Math.min((q[id] ?? 0) + 1, incCapFor(id));
       trackBooking({ name: "booking_tier_change", tier_id: id, qty: next });
       return { ...q, [id]: next };
     });
@@ -298,6 +306,7 @@ export default function BookingFlow({
                 <StepSelect
                   admissionTier={admissionTier}
                   partnershipTiers={partnershipTiers}
+                  remainingByTierId={remainingByTierId}
                   mode={mode}
                   setMode={switchMode}
                   qty={qty}

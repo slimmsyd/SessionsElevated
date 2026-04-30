@@ -11,6 +11,7 @@ import styles from "../book.module.css";
 type Props = {
   admissionTier: Tier;
   partnershipTiers: Tier[];
+  remainingByTierId: Record<string, number | null>;
   mode: TierMode;
   setMode: (m: TierMode) => void;
   qty: QtyMap;
@@ -21,6 +22,7 @@ type Props = {
 export default function StepSelect({
   admissionTier,
   partnershipTiers,
+  remainingByTierId,
   mode,
   setMode,
   qty,
@@ -55,6 +57,7 @@ export default function StepSelect({
           <TierCard
             tier={admissionTier}
             qty={qty[admissionTier.id] ?? 0}
+            remaining={remainingByTierId[admissionTier.id] ?? null}
             onInc={() => inc(admissionTier.id)}
             onDec={() => dec(admissionTier.id)}
           />
@@ -73,6 +76,7 @@ export default function StepSelect({
                 key={t.id}
                 tier={t}
                 qty={qty[t.id] ?? 0}
+                remaining={remainingByTierId[t.id] ?? null}
                 onInc={() => inc(t.id)}
                 onDec={() => dec(t.id)}
               />

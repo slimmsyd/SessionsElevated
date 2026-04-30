@@ -3,11 +3,17 @@ import styles from "../book.module.css";
 
 type Props = {
   qty: number;
+  incDisabled?: boolean;
   onInc: () => void;
   onDec: () => void;
 };
 
-export default function QuantityStepper({ qty, onInc, onDec }: Props) {
+export default function QuantityStepper({
+  qty,
+  incDisabled = false,
+  onInc,
+  onDec,
+}: Props) {
   return (
     <div className={styles.qtyStepper}>
       <button
@@ -25,7 +31,8 @@ export default function QuantityStepper({ qty, onInc, onDec }: Props) {
       <button
         type="button"
         onClick={onInc}
-        className={styles.qtyBtn}
+        disabled={incDisabled}
+        className={`${styles.qtyBtn} ${incDisabled ? styles.qtyBtnDisabled : ""}`}
         aria-label="Increase quantity"
       >
         +
