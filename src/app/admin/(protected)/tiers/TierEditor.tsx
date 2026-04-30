@@ -8,6 +8,7 @@ type Draft = {
   name: string;
   price: string;
   rsvpCount: string;
+  capacity: string; // empty = unlimited
   blurb: string;
   badge: string;
   includesText: string;
@@ -18,6 +19,7 @@ function tierToDraft(t: Tier): Draft {
     name: t.name,
     price: String(t.price),
     rsvpCount: String(t.rsvpCount),
+    capacity: t.capacity == null ? "" : String(t.capacity),
     blurb: t.blurb,
     badge: t.badge ?? "",
     includesText: t.includes.join("\n"),
@@ -30,12 +32,20 @@ function draftToPatch(d: Draft): {
   error?: string;
 } {
   const price = Number(d.price);
-  if (!Number.isInteger(price) || price < 1) {
-    return { ok: false, error: "Price must be a whole number" };
+  if (!Number.isInteger(price) || price < 0) {
+    return { ok: false, error: "Price must be a whole number ≥ 0" };
   }
   const rsvpCount = Number(d.rsvpCount);
   if (!Number.isInteger(rsvpCount) || rsvpCount < 1) {
     return { ok: false, error: "RSVP count must be a whole number" };
+  }
+  let capacity: number | null = null;
+  if (d.capacity.trim() !== "") {
+    const c = Number(d.capacity);
+    if (!Number.isInteger(c) || c < 0) {
+      return { ok: false, error: "Capacity must be empty or a whole number ≥ 0" };
+    }
+    capacity = c;
   }
   if (!d.name.trim()) return { ok: false, error: "Name is required" };
   return {
@@ -44,6 +54,7 @@ function draftToPatch(d: Draft): {
       name: d.name,
       price,
       rsvpCount,
+      capacity,
       blurb: d.blurb,
       badge: d.badge.trim() ? d.badge.trim() : undefined,
       includes: d.includesText
@@ -54,7 +65,13 @@ function draftToPatch(d: Draft): {
   };
 }
 
-export default function TierEditor({ tier }: { tier: Tier }) {
+export default function TierEditor({
+  tier,
+  sold,
+}: {
+  tier: Tier;
+  sold: number;
+}) {
   const router = useRouter();
   const [original, setOriginal] = useState<Tier>(tier);
   const [draft, setDraft] = useState<Draft>(() => tierToDraft(tier));
@@ -115,9 +132,18 @@ export default function TierEditor({ tier }: { tier: Tier }) {
     <div className={styles.tier}>
       <div className={styles.tierHeader}>
         <span className={`label`}>{tier.id}</span>
-        {savedAt && !dirty && (
-          <span className={styles.savedBadge}>Saved</span>
-        )}
+        <div className={styles.tierHeaderRight}>
+          <span className={styles.capacityBadge}>
+            {tier.capacity == null
+              ? `${sold} sold · ∞ capacity`
+              : `${sold} / ${tier.capacity} sold${
+                  sold >= tier.capacity ? " · sold out" : ""
+                }`}
+          </span>
+          {savedAt && !dirty && (
+            <span className={styles.savedBadge}>Saved</span>
+          )}
+        </div>
       </div>
 
       <div className={styles.row}>
@@ -155,6 +181,20 @@ export default function TierEditor({ tier }: { tier: Tier }) {
             min={1}
             max={50}
             step={1}
+          />
+        </label>
+        <label className={styles.field}>
+          <span className="label">Capacity</span>
+          <input
+            type="number"
+            inputMode="numeric"
+            value={draft.capacity}
+            onChange={onText("capacity")}
+            className={styles.input}
+            min={0}
+            max={10000}
+            step={1}
+            placeholder="∞"
           />
         </label>
       </div>

@@ -1,11 +1,6 @@
-import { promises as fs } from "node:fs";
-import path from "node:path";
-import { ALL_TIERS, type Tier } from "@/app/book/components/tiers";
-import { CURRENT_SESSION, type Session } from "@/lib/sessions";
-
-const DATA_DIR = path.join(process.cwd(), "src", "data");
-const TIERS_PATH = path.join(DATA_DIR, "tiers.json");
-const SESSION_PATH = path.join(DATA_DIR, "session.json");
+import { prisma } from "@/lib/prisma";
+import type { Tier, TierMode } from "@/app/book/components/tiers";
+import type { Session } from "@/lib/sessions";
 
 export interface AdminStore {
   getTiers(): Promise<Tier[]>;
@@ -14,58 +9,110 @@ export interface AdminStore {
   updateSession(patch: Partial<Session>): Promise<Session>;
 }
 
-async function readJsonOrFallback<T>(file: string, fallback: T): Promise<T> {
-  try {
-    const raw = await fs.readFile(file, "utf8");
-    return JSON.parse(raw) as T;
-  } catch {
-    return fallback;
-  }
+type PrismaTier = {
+  id: string;
+  mode: string;
+  name: string;
+  rsvpCount: number;
+  price: number;
+  capacity: number | null;
+  blurb: string;
+  includes: string[];
+  badge: string | null;
+};
+
+type PrismaSession = {
+  id: string;
+  title: string;
+  subtitle: string;
+  date: string;
+  time: string;
+  doors: string;
+  location: string;
+  poster: string;
+};
+
+function toTier(row: PrismaTier): Tier {
+  return {
+    id: row.id,
+    mode: row.mode as TierMode,
+    name: row.name,
+    rsvpCount: row.rsvpCount,
+    price: row.price,
+    capacity: row.capacity,
+    blurb: row.blurb,
+    includes: row.includes,
+    badge: row.badge ?? undefined,
+  };
 }
 
-async function writeJsonAtomic(file: string, value: unknown): Promise<void> {
-  await fs.mkdir(path.dirname(file), { recursive: true });
-  const tmp = `${file}.${process.pid}.${Date.now()}.tmp`;
-  await fs.writeFile(tmp, JSON.stringify(value, null, 2) + "\n", "utf8");
-  await fs.rename(tmp, file);
+function toSession(row: PrismaSession): Session {
+  return {
+    id: row.id,
+    title: row.title,
+    subtitle: row.subtitle,
+    date: row.date,
+    time: row.time,
+    doors: row.doors,
+    location: row.location,
+    poster: row.poster,
+  };
 }
 
-export function createFileStore(): AdminStore {
+export function createPrismaStore(): AdminStore {
   return {
     async getTiers() {
-      return readJsonOrFallback<Tier[]>(TIERS_PATH, ALL_TIERS);
+      const rows = await prisma.tier.findMany({
+        orderBy: [{ position: "asc" }, { id: "asc" }],
+      });
+      return rows.map(toTier);
     },
 
     async updateTier(id, patch) {
-      const tiers = await readJsonOrFallback<Tier[]>(TIERS_PATH, ALL_TIERS);
-      const idx = tiers.findIndex((t) => t.id === id);
-      if (idx === -1) throw new Error(`Unknown tier: ${id}`);
-      const current = tiers[idx];
-      const next: Tier = {
-        ...current,
-        ...patch,
-        id: current.id,
-        mode: current.mode,
-      };
-      tiers[idx] = next;
-      await writeJsonAtomic(TIERS_PATH, tiers);
-      return next;
+      const data: Record<string, unknown> = {};
+      if (patch.name !== undefined) data.name = patch.name;
+      if (patch.price !== undefined) data.price = patch.price;
+      if (patch.blurb !== undefined) data.blurb = patch.blurb;
+      if (patch.includes !== undefined) data.includes = patch.includes;
+      if (patch.rsvpCount !== undefined) data.rsvpCount = patch.rsvpCount;
+      if ("capacity" in patch) data.capacity = patch.capacity ?? null;
+      if ("badge" in patch) data.badge = patch.badge ?? null;
+      const row = await prisma.tier.update({ where: { id }, data });
+      return toTier(row);
     },
 
     async getSession() {
-      return readJsonOrFallback<Session>(SESSION_PATH, CURRENT_SESSION);
+      const row = await prisma.session.findFirst();
+      if (!row) {
+        throw new Error("No session configured. Seed the database first.");
+      }
+      return toSession(row);
     },
 
     async updateSession(patch) {
-      const current = await readJsonOrFallback<Session>(
-        SESSION_PATH,
-        CURRENT_SESSION,
-      );
-      const next: Session = { ...current, ...patch, id: current.id };
-      await writeJsonAtomic(SESSION_PATH, next);
-      return next;
+      const current = await prisma.session.findFirst();
+      if (!current) {
+        throw new Error("No session configured. Seed the database first.");
+      }
+      const data: Record<string, unknown> = {};
+      for (const key of [
+        "title",
+        "subtitle",
+        "date",
+        "time",
+        "doors",
+        "location",
+        "poster",
+      ] as const) {
+        if (patch[key] !== undefined) data[key] = patch[key];
+      }
+      const row = await prisma.session.update({
+        where: { id: current.id },
+        data,
+      });
+      return toSession(row);
     },
   };
 }
 
-export const store = createFileStore();
+export const store = createPrismaStore();

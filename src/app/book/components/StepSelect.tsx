@@ -1,15 +1,16 @@
 "use client";
 import {
-  ADMISSION_TIER,
-  PARTNERSHIP_TIERS,
   PARTNERSHIP_NOTE,
   type QtyMap,
+  type Tier,
   type TierMode,
 } from "./tiers";
 import TierCard from "./TierCard";
 import styles from "../book.module.css";
 
 type Props = {
+  admissionTier: Tier;
+  partnershipTiers: Tier[];
   mode: TierMode;
   setMode: (m: TierMode) => void;
   qty: QtyMap;
@@ -17,7 +18,15 @@ type Props = {
   dec: (id: string) => void;
 };
 
-export default function StepSelect({ mode, setMode, qty, inc, dec }: Props) {
+export default function StepSelect({
+  admissionTier,
+  partnershipTiers,
+  mode,
+  setMode,
+  qty,
+  inc,
+  dec,
+}: Props) {
   return (
     <div>
       <h2 className={`h3 ${styles.stepHeading}`}>Reserve your place</h2>
@@ -44,10 +53,10 @@ export default function StepSelect({ mode, setMode, qty, inc, dec }: Props) {
       {mode === "admission" ? (
         <div className={styles.tierList}>
           <TierCard
-            tier={ADMISSION_TIER}
-            qty={qty[ADMISSION_TIER.id] ?? 0}
-            onInc={() => inc(ADMISSION_TIER.id)}
-            onDec={() => dec(ADMISSION_TIER.id)}
+            tier={admissionTier}
+            qty={qty[admissionTier.id] ?? 0}
+            onInc={() => inc(admissionTier.id)}
+            onDec={() => dec(admissionTier.id)}
           />
         </div>
       ) : (
@@ -59,7 +68,7 @@ export default function StepSelect({ mode, setMode, qty, inc, dec }: Props) {
             </p>
           </div>
           <div className={styles.tierList}>
-            {PARTNERSHIP_TIERS.map((t) => (
+            {partnershipTiers.map((t) => (
               <TierCard
                 key={t.id}
                 tier={t}

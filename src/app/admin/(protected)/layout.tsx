@@ -31,6 +31,7 @@ export default async function ProtectedAdminLayout({
             <NavLink href="/admin/tiers">Tiers &amp; pricing</NavLink>
             <NavLink href="/admin/copy">Session copy</NavLink>
             <NavLink href="/admin/bookings">Bookings</NavLink>
+            <NavLink href="/admin/customers">Customers</NavLink>
           </nav>
         </div>
         <SignOutButton />

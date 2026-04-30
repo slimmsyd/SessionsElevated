@@ -10,6 +10,7 @@ const MAX_INCLUDE_ITEM = 500;
 const MAX_INCLUDES = 20;
 const MAX_BADGE = 50;
 const MAX_RSVP = 50;
+const MAX_CAPACITY = 10_000;
 
 function validatePatch(patch: unknown): {
   ok: true;
@@ -26,10 +27,10 @@ function validatePatch(patch: unknown): {
     if (
       typeof v !== "number" ||
       !Number.isInteger(v) ||
-      v < 1 ||
+      v < 0 ||
       v > MAX_PRICE
     ) {
-      return { ok: false, error: `Price must be a whole number between 1 and ${MAX_PRICE}` };
+      return { ok: false, error: `Price must be a whole number between 0 and ${MAX_PRICE}` };
     }
     out.price = v;
   }
@@ -71,6 +72,21 @@ function validatePatch(patch: unknown): {
       return { ok: false, error: `RSVP count must be a whole number between 1 and ${MAX_RSVP}` };
     }
     out.rsvpCount = v;
+  }
+  if ("capacity" in p) {
+    const v = p.capacity;
+    if (v === null || v === undefined || v === "") {
+      out.capacity = null;
+    } else if (
+      typeof v !== "number" ||
+      !Number.isInteger(v) ||
+      v < 0 ||
+      v > MAX_CAPACITY
+    ) {
+      return { ok: false, error: `Capacity must be empty (unlimited) or a whole number between 0 and ${MAX_CAPACITY}` };
+    } else {
+      out.capacity = v;
+    }
   }
 
   if (Object.keys(out).length === 0) {

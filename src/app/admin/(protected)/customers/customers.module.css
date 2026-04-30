@@ -1,0 +1,95 @@
+.placeholder {
+  padding: 32px;
+  background: #fff;
+  border: 1px solid var(--line);
+  font-family: var(--font-body);
+  color: var(--ink-soft);
+  line-height: 1.7;
+}
+
+.placeholder code {
+  background: rgba(31, 38, 36, 0.06);
+  padding: 2px 6px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.tableWrap {
+  border: 1px solid var(--line);
+  background: #fff;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+  font-size: 14px;
+}
+
+.table th,
+.table td {
+  text-align: left;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.table th {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  font-weight: 400;
+  background: rgba(31, 38, 36, 0.02);
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.table tr:hover td {
+  background: rgba(31, 38, 36, 0.02);
+}
+
+.table a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+  text-underline-offset: 3px;
+}
+
+.table a:hover {
+  text-decoration-color: var(--ink);
+}
+
+.ref {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  background: rgba(31, 38, 36, 0.04);
+  padding: 4px 8px;
+}
+
+.lineItems {
+  font-style: italic;
+  color: var(--ink-soft);
+  max-width: 260px;
+}
+
+.optInYes {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.optInNo {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}

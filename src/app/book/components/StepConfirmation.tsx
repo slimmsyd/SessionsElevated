@@ -1,14 +1,15 @@
 "use client";
 import Link from "next/link";
-import { CURRENT_SESSION } from "@/lib/sessions";
+import type { Session } from "@/lib/sessions";
 import styles from "../book.module.css";
 
 type Props = {
+  session: Session;
   code: string;
   email: string;
 };
 
-export default function StepConfirmation({ code, email }: Props) {
+export default function StepConfirmation({ session, code, email }: Props) {
   return (
     <div style={{ paddingTop: 24 }}>
       <div className={styles.confirmCheck} aria-hidden="true">
@@ -40,7 +41,7 @@ export default function StepConfirmation({ code, email }: Props) {
             When
           </div>
           <div className="body" style={{ color: "var(--ink)" }}>
-            {CURRENT_SESSION.date}
+            {session.date}
           </div>
         </div>
         <div className={styles.confirmFullSpan}>
@@ -48,7 +49,7 @@ export default function StepConfirmation({ code, email }: Props) {
             Where
           </div>
           <div className="body" style={{ color: "var(--ink)" }}>
-            {CURRENT_SESSION.location}
+            {session.location}
           </div>
         </div>
       </div>

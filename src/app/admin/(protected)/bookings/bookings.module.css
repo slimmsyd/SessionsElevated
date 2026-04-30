@@ -1,0 +1,117 @@
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+
+.toolbarMeta {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--ink-mute);
+  font-style: italic;
+}
+
+.error {
+  font-size: 14px;
+  color: #c0392b;
+  padding: 14px 18px;
+  background: rgba(192, 57, 43, 0.06);
+  border-left: 2px solid #c0392b;
+  margin-bottom: 24px;
+}
+
+.placeholder {
+  padding: 32px;
+  background: #fff;
+  border: 1px solid var(--line);
+  font-family: var(--font-body);
+  color: var(--ink-mute);
+  text-align: center;
+}
+
+.section {
+  margin-bottom: 40px;
+}
+
+.tierGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.tierRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 16px 20px;
+  background: #fff;
+  border: 1px solid var(--line);
+}
+
+.tierName {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--ink);
+}
+
+.tierQty {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 300;
+  color: var(--accent);
+}
+
+.tableWrap {
+  border: 1px solid var(--line);
+  background: #fff;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+  font-size: 14px;
+}
+
+.table th,
+.table td {
+  text-align: left;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.table th {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  font-weight: 400;
+  background: rgba(31, 38, 36, 0.02);
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.table tr:hover td {
+  background: rgba(31, 38, 36, 0.02);
+}
+
+.ref {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  background: rgba(31, 38, 36, 0.04);
+  padding: 4px 8px;
+  border-radius: 0;
+}
+
+.lineItems {
+  font-style: italic;
+  color: var(--ink-soft);
+  max-width: 300px;
+}

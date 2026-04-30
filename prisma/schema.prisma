@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum TierMode {
+  admission
+  partnership
+}
+
+model Tier {
+  id        String   @id
+  mode      TierMode
+  name      String
+  rsvpCount Int
+  price     Int
+  capacity  Int? // null = unlimited; integer = hard cap on lifetime succeeded sales
+  blurb     String   @db.Text
+  includes  String[]
+  badge     String?
+  position  Int      @default(0)
+  updatedAt DateTime @updatedAt
+
+  @@map("tiers")
+}
+
+model Session {
+  id        String   @id
+  title     String
+  subtitle  String
+  date      String
+  time      String
+  doors     String
+  location  String
+  poster    String
+  updatedAt DateTime @updatedAt
+
+  @@map("sessions")
+}
+
+model Booking {
+  id              String   @id @default(cuid())
+  paymentIntentId String   @unique
+  referenceCode   String   @unique
+  customerName    String
+  customerEmail   String
+  customerPhone   String?
+  optIn           Boolean  @default(false)
+  amountCents     Int
+  currency        String   @default("usd")
+  subtotalCents   Int
+  feesCents       Int
+  lineItems       String   @db.Text // human readable: "General Admission × 2"
+  tierQty         Json // { "general": 2, "featured_partner": 1 }
+  sessionId       String
+  status          String   @default("succeeded")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([customerEmail])
+  @@index([sessionId])
+  @@index([createdAt])
+  @@map("bookings")
+}
