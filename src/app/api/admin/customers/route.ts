@@ -1,6 +1,26 @@
 import { NextResponse } from "next/server";
+import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireAdminSession } from "@/lib/admin-auth";
+
+type CustomerRow = Prisma.BookingGetPayload<{
+  select: {
+    id: true;
+    paymentIntentId: true;
+    referenceCode: true;
+    customerName: true;
+    customerEmail: true;
+    customerPhone: true;
+    optIn: true;
+    amountCents: true;
+    currency: true;
+    lineItems: true;
+    tierQty: true;
+    sessionId: true;
+    status: true;
+    createdAt: true;
+  };
+}>;
 
 function csvEscape(v: unknown): string {
   if (v === null || v === undefined) return "";
@@ -16,7 +36,7 @@ export async function GET(req: Request) {
   const url = new URL(req.url);
   const format = url.searchParams.get("format");
 
-  const bookings = await prisma.booking.findMany({
+  const bookings: CustomerRow[] = await prisma.booking.findMany({
     orderBy: { createdAt: "desc" },
     take: 1000,
     select: {
@@ -51,7 +71,7 @@ export async function GET(req: Request) {
       "status",
       "created_at",
     ];
-    const rows = bookings.map((b) => [
+    const rows = bookings.map((b: CustomerRow) => [
       b.referenceCode,
       b.customerName,
       b.customerEmail,
@@ -80,7 +100,7 @@ export async function GET(req: Request) {
 
   return NextResponse.json({
     count: bookings.length,
-    bookings: bookings.map((b) => ({
+    bookings: bookings.map((b: CustomerRow) => ({
       ...b,
       createdAt: b.createdAt.toISOString(),
     })),

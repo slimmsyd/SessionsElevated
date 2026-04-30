@@ -1,3 +1,4 @@
+import type { Booking } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import styles from "../admin.module.css";
 import customerStyles from "./customers.module.css";
@@ -22,12 +23,12 @@ function fmtDate(d: Date): string {
 }
 
 export default async function AdminCustomersPage() {
-  const bookings = await prisma.booking.findMany({
+  const bookings: Booking[] = await prisma.booking.findMany({
     orderBy: { createdAt: "desc" },
     take: 500,
   });
 
-  const optedIn = bookings.filter((b) => b.optIn).length;
+  const optedIn = bookings.filter((b: Booking) => b.optIn).length;
 
   return (
     <>
@@ -73,7 +74,7 @@ export default async function AdminCustomersPage() {
               </tr>
             </thead>
             <tbody>
-              {bookings.map((b) => (
+              {bookings.map((b: Booking) => (
                 <tr key={b.id}>
                   <td>
                     <code className={customerStyles.ref}>
