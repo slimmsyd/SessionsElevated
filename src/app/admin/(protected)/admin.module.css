@@ -1,0 +1,219 @@
+.shell {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: 100vh;
+  background: var(--paper);
+}
+
+@media (max-width: 880px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 32px 28px;
+  border-right: 1px solid var(--line);
+  background: var(--bg);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+@media (max-width: 880px) {
+  .sidebar {
+    position: static;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+  }
+}
+
+.brand {
+  display: inline-block;
+  text-decoration: none;
+  color: var(--ink-soft);
+  margin-bottom: 24px;
+}
+
+.brand:hover {
+  color: var(--ink);
+}
+
+.brandSubtitle {
+  margin-bottom: 32px;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.navLink {
+  display: block;
+  padding: 12px 16px;
+  margin-left: -16px;
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--ink-soft);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  transition:
+    color 200ms ease,
+    border-color 200ms ease,
+    background-color 200ms ease;
+  cursor: pointer;
+}
+
+.navLink:hover {
+  color: var(--ink);
+  background: rgba(31, 38, 36, 0.04);
+}
+
+.navLinkActive {
+  color: var(--ink);
+  border-left-color: var(--ink);
+  background: rgba(31, 38, 36, 0.04);
+}
+
+.signOut {
+  font: inherit;
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  background: transparent;
+  border: none;
+  padding: 12px 0;
+  text-align: left;
+  cursor: pointer;
+  transition: color 200ms ease;
+}
+
+.signOut:hover {
+  color: var(--ink);
+}
+
+.signOut:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.content {
+  padding: 56px 64px;
+  max-width: 1100px;
+  width: 100%;
+}
+
+@media (max-width: 880px) {
+  .content {
+    padding: 32px 24px;
+  }
+}
+
+/* ── shared admin page primitives ───────────────────────────────────── */
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  margin-bottom: 40px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.pageHeaderText {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pageHeaderEyebrow {
+  margin: 0;
+}
+
+.statGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.statCard {
+  border: 1px solid var(--line);
+  background: #fff;
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.statLabel {
+  margin: 0;
+}
+
+.statValue {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: 40px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.statSub {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--ink-mute);
+}
+
+.section {
+  margin-bottom: 48px;
+}
+
+.sectionTitle {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--ink);
+  margin: 0 0 8px 0;
+}
+
+.sectionLede {
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--ink-soft);
+  margin: 0 0 20px 0;
+  max-width: 56ch;
+}
+
+.linkRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.linkRow a {
+  display: inline-block;
+  padding: 12px 22px;
+  border: 1px solid var(--line);
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--ink);
+  background: #fff;
+  text-decoration: none;
+  transition:
+    border-color 200ms ease,
+    background-color 200ms ease;
+}
+
+.linkRow a:hover {
+  border-color: var(--ink);
+  background: rgba(31, 38, 36, 0.04);
+}

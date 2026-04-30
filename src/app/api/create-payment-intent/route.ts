@@ -1,10 +1,19 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
-import { ALL_TIERS, FEE_RATE, FEE_FLAT } from "@/app/book/components/tiers";
+import {
+  ALL_TIERS,
+  FEE_RATE,
+  FEE_FLAT,
+  MAX_QTY,
+  type Tier,
+} from "@/app/book/components/tiers";
+import { store } from "@/lib/admin-store";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2026-04-22.dahlia",
 });
+
+const MAX_TOTAL_CENTS = 5_000_00; // $5,000 hard ceiling
 
 type LineItem = { tier_id: string; qty: number };
 type RequestBody = {
@@ -24,20 +33,33 @@ export async function POST(req: Request) {
     const { items, details, optIn } = body;
 
     // ── Validate & compute server-side total ─────────────────────────────
-    if (!items || items.length === 0) {
+    if (!Array.isArray(items) || items.length === 0) {
       return NextResponse.json(
         { error: "No items provided" },
         { status: 400 },
       );
     }
 
+    let tiers: Tier[];
+    try {
+      tiers = await store.getTiers();
+    } catch {
+      tiers = ALL_TIERS;
+    }
+
     let subtotal = 0;
     const lineDescriptions: string[] = [];
 
     for (const item of items) {
-      if (item.qty <= 0) continue;
+      if (!Number.isInteger(item.qty) || item.qty < 0 || item.qty > MAX_QTY) {
+        return NextResponse.json(
+          { error: "Invalid quantity" },
+          { status: 400 },
+        );
+      }
+      if (item.qty === 0) continue;
 
-      const tier = ALL_TIERS.find((t) => t.id === item.tier_id);
+      const tier = tiers.find((t) => t.id === item.tier_id);
       if (!tier) {
         return NextResponse.json(
           { error: `Unknown tier: ${item.tier_id}` },
@@ -59,6 +81,13 @@ export async function POST(req: Request) {
     const fees = Number((subtotal * FEE_RATE + FEE_FLAT).toFixed(2));
     const total = Number((subtotal + fees).toFixed(2));
     const amountInCents = Math.round(total * 100);
+
+    if (amountInCents > MAX_TOTAL_CENTS) {
+      return NextResponse.json(
+        { error: "Order exceeds maximum" },
+        { status: 400 },
+      );
+    }
 
     // ── Create PaymentIntent ─────────────────────────────────────────────
     const paymentIntent = await stripe.paymentIntents.create({

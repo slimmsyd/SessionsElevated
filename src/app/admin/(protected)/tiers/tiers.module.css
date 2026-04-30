@@ -1,0 +1,100 @@
+.tierList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tier {
+  border: 1px solid var(--line);
+  background: #fff;
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.tierHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.savedBadge {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.row {
+  display: flex;
+  gap: 16px;
+}
+
+@media (max-width: 720px) {
+  .row {
+    flex-direction: column;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.input,
+.textarea {
+  border: 1px solid var(--line);
+  padding: 12px 14px;
+  font: inherit;
+  font-family: var(--font-body);
+  font-size: 16px;
+  background: #fff;
+  color: var(--ink);
+  border-radius: 0;
+  transition: border-color 200ms ease;
+  width: 100%;
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 60px;
+  line-height: 1.5;
+}
+
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--ink);
+}
+
+.error {
+  font-size: 14px;
+  color: #c0392b;
+  padding: 10px 14px;
+  background: rgba(192, 57, 43, 0.06);
+  border-left: 2px solid #c0392b;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 4px;
+}
+
+.ghost,
+.primary {
+  cursor: pointer;
+}
+
+.ghost:disabled,
+.primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

@@ -17,5 +17,5 @@ export const CURRENT_SESSION: Session = {
   time: "10:00 AM – 2:00 PM",
   doors: "Doors open at 9:00 AM",
   location: "The Glasshouse · 4220 Dupont Cir NW, Washington, DC",
-  poster: "/assets/sessions/spring-awaken-blossom.png",
+  poster: "/assets/sessions/winter-ground-seed.png",
 };
