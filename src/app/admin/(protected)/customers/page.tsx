@@ -37,8 +37,7 @@ export default async function AdminCustomersPage() {
           <span className={`label ${styles.pageHeaderEyebrow}`}>People</span>
           <h1 className="h2">Customers</h1>
           <p className={styles.statSub}>
-            Captured at payment success via Stripe webhook. {bookings.length}{" "}
-            total · {optedIn} opted in for email updates.
+            {bookings.length} total · {optedIn} opted in for email updates.
           </p>
         </div>
         <a
@@ -52,11 +51,15 @@ export default async function AdminCustomersPage() {
 
       {bookings.length === 0 ? (
         <div className={customerStyles.placeholder}>
-          No customers yet. Once <code>STRIPE_WEBHOOK_SECRET</code> is set and a
-          webhook is configured in Stripe pointing at{" "}
-          <code>/api/webhooks/stripe</code>, every successful payment writes a
-          row here. To backfill prior test payments run{" "}
-          <code>npx dotenv -e .env.local -- node scripts/backfill-bookings.mjs</code>.
+          <div className={customerStyles.placeholderEyebrow}>The room is still</div>
+          <p className={customerStyles.placeholderTitle}>
+            No customers yet.
+          </p>
+          <p className={customerStyles.placeholderBody}>
+            As soon as someone reserves a seat, their details will appear here —
+            name, email, phone, and whether they opted in to future updates.
+            Check back after your first booking lands.
+          </p>
         </div>
       ) : (
         <div className={customerStyles.tableWrap}>
