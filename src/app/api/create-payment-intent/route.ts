@@ -124,6 +124,7 @@ export async function POST(req: Request) {
       automatic_payment_methods: { enabled: true },
       receipt_email: details.email,
       metadata: {
+        app: "elevated_sessions",
         customer_name: `${details.firstName} ${details.lastName}`,
         customer_first_name: details.firstName,
         customer_last_name: details.lastName,

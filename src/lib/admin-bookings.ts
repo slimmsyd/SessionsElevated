@@ -27,6 +27,23 @@ function deriveReference(piId: string): string {
   return "ES-" + piId.replace("pi_", "").slice(0, 7).toUpperCase();
 }
 
+/**
+ * True if a PaymentIntent was created by the Elevated Sessions booking flow.
+ * Recognized by the `app: "elevated_sessions"` metadata marker (new) OR
+ * the presence of `session_id` / `tier_qty` / `line_items` (older PIs that
+ * predate the marker). Anything without these tags is some other Stripe
+ * activity on the same account and should be ignored.
+ */
+function isOurPI(pi: Stripe.PaymentIntent): boolean {
+  const m = pi.metadata ?? {};
+  return (
+    m.app === "elevated_sessions" ||
+    typeof m.session_id === "string" ||
+    typeof m.tier_qty === "string" ||
+    typeof m.line_items === "string"
+  );
+}
+
 function parseTierTotals(lineItems: string): Record<string, number> {
   const totals: Record<string, number> = {};
   if (!lineItems) return totals;
@@ -72,7 +89,9 @@ export async function countSoldByTierId(): Promise<{
   byTierName: Record<string, number>;
 }> {
   const list = await stripe.paymentIntents.list({ limit: 100 });
-  const succeeded = list.data.filter((pi) => pi.status === "succeeded");
+  const succeeded = list.data.filter(
+    (pi) => pi.status === "succeeded" && isOurPI(pi),
+  );
 
   const byTierId: Record<string, number> = {};
   const byTierName: Record<string, number> = {};
@@ -95,7 +114,9 @@ export async function countSoldByTierId(): Promise<{
 
 export async function fetchBookings(): Promise<BookingsSnapshot> {
   const list = await stripe.paymentIntents.list({ limit: 100 });
-  const succeeded = list.data.filter((pi) => pi.status === "succeeded");
+  const succeeded = list.data.filter(
+    (pi) => pi.status === "succeeded" && isOurPI(pi),
+  );
 
   const totalRevenueCents = succeeded.reduce(
     (s, pi) => s + (pi.amount_received ?? pi.amount),
