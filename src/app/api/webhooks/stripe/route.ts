@@ -125,14 +125,33 @@ export async function POST(req: Request) {
 
       // Forward a clean payload to n8n for fulfillment (email, sheet, etc.)
       let session = null;
+      let tiers: Awaited<ReturnType<typeof store.getTiers>> = [];
       try {
-        session = await store.getSession();
+        [session, tiers] = await Promise.all([
+          store.getSession(),
+          store.getTiers(),
+        ]);
       } catch {
-        /* tolerate missing session */
+        /* tolerate missing data */
       }
+
+      // Determine purchase mode: "partnership" if any partnership tier was bought,
+      // otherwise "admission". Mixed orders count as partnership so the buyer gets
+      // the partnership-specific email (richer logistical info).
+      const partnershipTierIds = new Set(
+        tiers.filter((t) => t.mode === "partnership").map((t) => t.id),
+      );
+      const hasPartnership = Object.keys(tierQty).some((id) =>
+        partnershipTierIds.has(id),
+      );
+      const mode: "admission" | "partnership" = hasPartnership
+        ? "partnership"
+        : "admission";
+
       await forwardToN8n({
         event: "payment_intent.succeeded",
         reference: referenceCode,
+        mode,
         customer: {
           first_name: meta.customer_first_name ?? "",
           last_name: meta.customer_last_name ?? "",
